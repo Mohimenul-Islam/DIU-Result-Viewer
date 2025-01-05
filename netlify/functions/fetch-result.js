@@ -1,7 +1,7 @@
-// fetch-result.js
-import fetch from 'node-fetch';
+// netlify/functions/fetch-result.js
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -28,19 +28,14 @@ export const handler = async (event) => {
   }
 
   const apiUrl = `http://software.diu.edu.bd:8006/result?grecaptcha=&semesterId=${semesterId}&studentId=${studentId}`;
-  console.log('Attempting to fetch from:', apiUrl);
-
+  
   try {
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-      },
-      // Important: Allow insecure HTTP requests
-      insecure: true,
-      rejectUnauthorized: false,
-      timeout: 15000 // Increased timeout to 15 seconds
+      }
     });
 
     if (!response.ok) {

@@ -2,39 +2,17 @@
   "name": "diu-result-viewer",
   "version": "1.0.0",
   "description": "DIU Result Viewer Application",
-  "private": true,
-  "type": "module",
+  "main": "script.js",
   "scripts": {
-    "build": "npm run build:css",
-    "build:css": "tailwindcss -i ./styles.css -o ./dist/output.css",
-    "dev": "tailwindcss -i ./styles.css -o ./dist/output.css --watch",
-    "netlify:dev": "netlify dev"
+    "build": "tailwindcss -i ./styles.css -o ./dist/output.css",
+    "dev": "tailwindcss -i ./styles.css -o ./dist/output.css --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Mohimenul-Islam/DIU-Result-Viewer.git"
-  },
-  "keywords": [
-    "diu",
-    "result-viewer",
-    "netlify"
-  ],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Mohimenul-Islam/DIU-Result-Viewer/issues"
-  },
-  "homepage": "https://github.com/Mohimenul-Islam/DIU-Result-Viewer#readme",
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
-    "netlify-cli": "^12.0.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "tailwindcss": "^3.4.17"
   }
 }
