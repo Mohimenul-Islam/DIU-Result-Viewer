@@ -2,42 +2,36 @@ async function fetchResult() {
   const studentId = document.getElementById('studentId').value;
   const semesterId = document.getElementById('semesterId').value;
   const resultContainer = document.getElementById('result');
-  
-  // Previous loading state code remains the same
+
   resultContainer.innerHTML = `
       <div class="card text-center">
           <div class="animate-pulse">
               <div class="text-gray-600">Fetching result...</div>
           </div>
       </div>`;
-  
-  const url = `http://software.diu.edu.bd:8006/result?grecaptcha=&semesterId=${semesterId}&studentId=${studentId}`;
+
+  // Use the Netlify Function URL
+  const url = `/.netlify/functions/fetch-result?semesterId=${semesterId}&studentId=${studentId}`;
 
   try {
-      const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'User-Agent': 'Mozilla/5.0'
-          }
-      });
+    const response = await fetch(url);
 
-      if (!response.ok) {
-          throw new Error(`Failed to fetch result: ${response.status}`);
-      }
+    if (!response.ok) {
+      throw new Error(`Failed to fetch result: ${response.status}`);
+    }
 
-      const data = await response.json();
-      displayResult(data);
+    const data = await response.json();
+    displayResult(data);
   } catch (error) {
-      resultContainer.innerHTML = `
-          <div class="card">
-              <div class="text-red-600 text-center">
-                  <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                  </svg>
-                  <p class="text-lg font-semibold">Error: ${error.message}</p>
-              </div>
-          </div>`;
+    resultContainer.innerHTML = `
+        <div class="card">
+            <div class="text-red-600 text-center">
+                <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <p class="text-lg font-semibold">Error: ${error.message}</p>
+            </div>
+        </div>`;
   }
 }
 
