@@ -1,0 +1,25 @@
+{
+  "name": "diu-result-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+  "build": "tailwindcss -i ./styles.css -o ./dist/output.css --watch"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mohimenul-Islam/DIU-Result-Viewer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mohimenul-Islam/DIU-Result-Viewer/issues"
+  },
+  "homepage": "https://github.com/Mohimenul-Islam/DIU-Result-Viewer#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}

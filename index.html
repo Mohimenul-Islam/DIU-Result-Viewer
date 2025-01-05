@@ -1,61 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DIU Result Viewer</title>
-  <style>
-    /* Simple styling for the webpage */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table, th, td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIU Result Viewer</title>
+    <link href="./dist/output.css" rel="stylesheet">
 </head>
-<body>
+<body class="min-h-screen bg-gray-50">
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Header with gradient animation -->
+        <div class="mb-12 text-center">
+            <h1 class="text-4xl font-bold mb-2 gradient-text animate-gradient">
+                DIU Result Viewer
+            </h1>
+            <p class="text-gray-600">View your academic performance with style</p>
+        </div>
 
-  <div class="container">
-    <h1>DIU Result Viewer</h1>
+        <!-- Main content card -->
+        <div class="card">
+            <!-- Input form -->
+            <div class="space-y-6">
+                <!-- Student ID input -->
+                <div>
+                    <label for="studentId" class="block text-sm font-medium text-gray-700 mb-2">Student ID</label>
+                    <input type="text" id="studentId" class="input-field" placeholder="Enter your student ID">
+                </div>
 
-    <!-- User input fields: Student ID and Semester -->
-    <label for="studentId">Enter Student ID:</label>
-    <input type="text" id="studentId" placeholder="Enter your student ID">
+                <!-- Semester select -->
+                <div>
+                    <label for="semesterId" class="block text-sm font-medium text-gray-700 mb-2">Select Semester</label>
+                    <select id="semesterId" class="input-field">
+                        <option value="243">Fall-2024</option>
+                        <option value="242">Summer-2024</option>
+                        <option value="241">Spring-2024</option>
+                    </select>
+                </div>
 
-    <label for="semesterId">Select Semester:</label>
-    <select id="semesterId">
-      <option value="243">Fall-2024</option>
-      <option value="242">Summer-2024</option>
-      <option value="241">Spring-2024</option>
-    </select>
+                <!-- Submit button -->
+                <button onclick="fetchResult()" class="button-primary">
+                    Get Result
+                </button>
+            </div>
+        </div>
 
-    <button onclick="fetchResult()">Get Result</button>
+        <!-- Result container -->
+        <div id="result" class="mt-8"></div>
+    </div>
 
-    <!-- This div will display the result after fetching it -->
-    <div id="result"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
