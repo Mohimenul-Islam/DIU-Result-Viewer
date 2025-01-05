@@ -59,7 +59,18 @@ function displayResult(data) {
         </tr>`;
     });
 
-    resultHtml += `</table>`;
+    resultHtml += `</table>
+      <p>Contact me for any queries:</p>
+      <p>
+        <a href="https://www.facebook.com/mohimenul.islam.927" target="_blank" style="text-decoration: none; margin-right: 10px;">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook" width="24" height="24">
+        </a>
+        <a href="https://www.linkedin.com/in/mohimenul-islam0" target="_blank" style="text-decoration: none;">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733561.png" alt="LinkedIn" width="24" height="24">
+        </a>
+      </p>
+      <p>Arigato gozaimasu for visiting!</p>`;
+
     document.getElementById('result').innerHTML = resultHtml;  // Display the result
   } else {
     document.getElementById('result').innerHTML = '<p>No result found for this semester.</p>';  // Handle case where no result is found
