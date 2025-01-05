@@ -1,8 +1,12 @@
 [build]
   functions = "netlify/functions"
 
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["node-fetch"]
+
 [[redirects]]
-  from = "/fetch-result/*"
-  to = "/.netlify/functions/fetch-result"
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
   status = 200
   force = true

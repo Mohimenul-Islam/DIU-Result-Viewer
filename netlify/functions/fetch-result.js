@@ -1,60 +1,70 @@
+// fetch-result.js
 import fetch from 'node-fetch';
 
-exports.handler = async (event) => {
-  // Extract query parameters
+export const handler = async (event) => {
+  // CORS headers
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Type': 'application/json'
+  };
+
+  // Handle OPTIONS request for CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers
+    };
+  }
+
   const { semesterId, studentId } = event.queryStringParameters;
 
   if (!semesterId || !studentId) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'semesterId and studentId are required' }),
-      headers: {
-        'Access-Control-Allow-Origin': '*', // Allow all origins
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+      headers,
+      body: JSON.stringify({ error: 'semesterId and studentId are required' })
     };
   }
 
   const apiUrl = `http://software.diu.edu.bd:8006/result?grecaptcha=&semesterId=${semesterId}&studentId=${studentId}`;
+  console.log('Attempting to fetch from:', apiUrl);
 
   try {
-    // Forward the request to the original API
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
       },
+      // Important: Allow insecure HTTP requests
+      insecure: true,
+      rejectUnauthorized: false,
+      timeout: 15000 // Increased timeout to 15 seconds
     });
 
     if (!response.ok) {
-      return {
-        statusCode: response.status,
-        body: JSON.stringify({ error: `Failed to fetch from API: ${response.statusText}` }),
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-        },
-      };
+      throw new Error(`API responded with status: ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
 
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+      headers,
+      body: JSON.stringify(data)
     };
   } catch (error) {
+    console.error('Error fetching result:', error);
+    
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Internal Server Error', details: error.message }),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
+      statusCode: 502,
+      headers,
+      body: JSON.stringify({
+        error: 'Failed to fetch result',
+        details: error.message,
+        url: apiUrl
+      })
     };
   }
 };
