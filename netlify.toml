@@ -2,7 +2,7 @@
   functions = "netlify/functions"
 
 [[redirects]]
-  from = "/.netlify/functions/fetch-result"
-  to = "http://software.diu.edu.bd:8006/result"
+  from = "/fetch-result/*"
+  to = "/.netlify/functions/fetch-result"
   status = 200
   force = true
