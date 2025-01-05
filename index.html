@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIU Result Viewer</title>
+  <style>
+    /* Simple styling for the webpage */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>DIU Result Viewer</h1>
+
+    <!-- User input fields: Student ID and Semester -->
+    <label for="studentId">Enter Student ID:</label>
+    <input type="text" id="studentId" placeholder="Enter your student ID">
+
+    <label for="semesterId">Select Semester:</label>
+    <select id="semesterId">
+      <option value="243">Fall-2024</option>
+      <option value="242">Summer-2024</option>
+      <option value="241">Spring-2024</option>
+    </select>
+
+    <button onclick="fetchResult()">Get Result</button>
+
+    <!-- This div will display the result after fetching it -->
+    <div id="result"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
