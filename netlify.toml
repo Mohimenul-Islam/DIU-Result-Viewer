@@ -1,0 +1,8 @@
+[build]
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/.netlify/functions/fetch-result"
+  to = "http://software.diu.edu.bd:8006/result"
+  status = 200
+  force = true
