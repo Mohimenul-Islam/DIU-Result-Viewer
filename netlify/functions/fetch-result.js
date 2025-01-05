@@ -8,6 +8,10 @@ exports.handler = async (event) => {
     return {
       statusCode: 400,
       body: JSON.stringify({ error: 'semesterId and studentId are required' }),
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Allow all origins
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     };
   }
 
@@ -26,6 +30,10 @@ exports.handler = async (event) => {
       return {
         statusCode: response.status,
         body: JSON.stringify({ error: `Failed to fetch from API: ${response.statusText}` }),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
       };
     }
 
@@ -34,11 +42,19 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       body: JSON.stringify(data),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     };
   } catch (error) {
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Internal Server Error', details: error.message }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
     };
   }
 };
