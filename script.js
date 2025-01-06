@@ -2,7 +2,9 @@ async function fetchResult() {
   const studentId = document.getElementById('studentId').value;
   const semesterId = document.getElementById('semesterId').value;
   const resultContainer = document.getElementById('result');
+  const contactSection = document.getElementById('contact');
 
+  // Display a loading state for the result
   resultContainer.innerHTML = `
       <div class="card text-center">
           <div class="animate-pulse">
@@ -10,11 +12,11 @@ async function fetchResult() {
           </div>
       </div>`;
 
-  // Use the Netlify Function URL
-  const url = `/.netlify/functions/fetch-result?semesterId=${semesterId}&studentId=${studentId}`;
-
   try {
-    const response = await fetch(url);
+    // Fetch the result data from the API
+    const response = await fetch(
+      `/.netlify/functions/fetch-result?semesterId=${semesterId}&studentId=${studentId}`
+    );
 
     if (!response.ok) {
       throw new Error(`Failed to fetch result: ${response.status}`);
@@ -33,12 +35,14 @@ async function fetchResult() {
             </div>
         </div>`;
   }
+
+  // Render the contact section regardless of the result
+  displayContactSection(contactSection);
 }
 
 function displayResult(data) {
   const resultContainer = document.getElementById('result');
 
-  // Ensure both `studentInfo` and `result` are present
   const studentInfo = data.studentInfo;
   const results = data.result;
 
@@ -55,11 +59,10 @@ function displayResult(data) {
 
   const { studentName, studentId, departmentName } = studentInfo;
   const { semesterName, semesterYear } = results[0];
-  const cgpa = results[0].cgpa || "N/A"; // Fallback to "N/A" if no CGPA is found
+  const cgpa = results[0].cgpa || "N/A";
 
   let resultHtml = `
       <div class="card">
-          <!-- Student Info Section -->
           <div class="text-center mb-8">
               <h2 class="text-2xl font-bold text-gray-800 mb-2">${studentName}</h2>
               <p class="text-gray-600">${departmentName}</p>
@@ -67,13 +70,11 @@ function displayResult(data) {
               <p class="text-gray-600">Semester: ${semesterName} ${semesterYear}</p>
           </div>
 
-          <!-- CGPA Section -->
           <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 mb-8 text-center">
               <p class="text-white text-sm uppercase tracking-wider mb-1">Overall CGPA</p>
               <p class="text-white text-4xl font-bold">${cgpa}</p>
           </div>
 
-          <!-- Results Table -->
           <div class="overflow-x-auto rounded-lg border border-gray-200 mb-8">
               <table class="w-full">
                   <thead class="bg-gray-50">
@@ -100,43 +101,44 @@ function displayResult(data) {
                   </tbody>
               </table>
           </div>
-
-          <!-- Contact Section -->
-          <div class="relative pt-8 border-t border-gray-200">
-              <div class="mt-6 text-center">
-                  <p class="text-gray-600 mb-6 font-medium">Contact me if you have any queries!</p>
-                  <div class="flex justify-center space-x-8">
-                      <a href="https://www.facebook.com/mohimenul.islam.927" target="_blank" class="group relative">
-                          <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-75 group-hover:opacity-100 blur transition duration-200"></div>
-                          <div class="relative bg-white rounded-lg p-4 flex items-center space-x-3 transition duration-200 transform group-hover:scale-105">
-                              <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                              </svg>
-                              <span class="text-gray-700 font-medium">Facebook</span>
-                          </div>
-                      </a>
-                      <a href="https://www.linkedin.com/in/mohimenul-islam0" target="_blank" class="group relative">
-                          <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-75 group-hover:opacity-100 blur transition duration-200"></div>
-                          <div class="relative bg-white rounded-lg p-4 flex items-center space-x-3 transition duration-200 transform group-hover:scale-105">
-                              <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                                  <rect x="2" y="9" width="4" height="12"></rect>
-                                  <circle cx="4" cy="4" r="2"></circle>
-                              </svg>
-                              <span class="text-gray-700 font-medium">LinkedIn</span>
-                          </div>
-                      </a>
-                  </div>
-                  <p class="mt-8 text-gray-500 italic">
-                      <span class="inline-block transform hover:scale-110 transition-transform duration-200">
-                          Arigato gozaimasu for visiting!
-                      </span>
-                  </p>
-              </div>
-          </div>
       </div>`;
 
   resultContainer.innerHTML = resultHtml;
+}
+
+function displayContactSection(contactSection) {
+  const contactHtml = `
+      <div class="card text-center mt-6">
+          <p class="text-gray-600 mb-6 font-medium">Contact me if you have any queries!</p>
+          <div class="flex justify-center space-x-8">
+              <a href="https://www.facebook.com/mohimenul.islam.927" target="_blank" class="group relative">
+                  <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-75 group-hover:opacity-100 blur transition duration-200"></div>
+                  <div class="relative bg-white rounded-lg p-4 flex items-center space-x-3 transition duration-200 transform group-hover:scale-105">
+                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                      </svg>
+                      <span class="text-gray-700 font-medium">Facebook</span>
+                  </div>
+              </a>
+              <a href="https://www.linkedin.com/in/mohimenul-islam0" target="_blank" class="group relative">
+                  <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-75 group-hover:opacity-100 blur transition duration-200"></div>
+                  <div class="relative bg-white rounded-lg p-4 flex items-center space-x-3 transition duration-200 transform group-hover:scale-105">
+                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                          <rect x="2" y="9" width="4" height="12"></rect>
+                          <circle cx="4" cy="4" r="2"></circle>
+                      </svg>
+                      <span class="text-gray-700 font-medium">LinkedIn</span>
+                  </div>
+              </a>
+          </div>
+          <p class="mt-8 text-gray-500 italic">
+              <span class="inline-block transform hover:scale-110 transition-transform duration-200">
+                  Arigato gozaimasu for visiting!
+              </span>
+          </p>
+      </div>`;
+  contactSection.innerHTML = contactHtml;
 }
 
 function getGradeColor(grade) {
