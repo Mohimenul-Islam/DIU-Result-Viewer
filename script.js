@@ -3,10 +3,10 @@ async function validateStudentId(studentId) {
     throw new Error('Please enter your Student ID');
   }
   //const studentIdRegex = /^\d{3}-\d{2}-\d{3,4}$/;
-  const studentIdRegex = /^\d{3}-\d{2}-\d{1,4}$/;
-  if (!studentIdRegex.test(studentId)) {
-    throw new Error('Invalid Student ID format. Please use format: XXX-XX-XXXX (e.g., 221-15-5725)');
-  }
+  // const studentIdRegex = /^\d{3}-\d{2}-\d{1,4}$/;
+  // if (!studentIdRegex.test(studentId)) {
+  //   throw new Error('Invalid Student ID format. Please use format: XXX-XX-XXXX (e.g., 221-15-5725)');
+  // }
 
   return true;
 }
@@ -142,20 +142,20 @@ function displayResult(data) {
   ensureContactSection();
 }
 
-// // Add input formatting helper
-// document.getElementById('studentId').addEventListener('input', function(e) {
-//   let value = e.target.value.replace(/[^0-9-]/g, '');
+// Add input formatting helper
+document.getElementById('studentId').addEventListener('input', function(e) {
+  let value = e.target.value.replace(/[^0-9-]/g, '');
   
-//   // if (value.length >= 3 && value.charAt(3) !== '-') {
-//   //   value = value.slice(0, 3) + '-' + value.slice(3);
-//   // }
-//   // if (value.length >= 6 && value.charAt(6) !== '-') {
-//   //   value = value.slice(0, 6) + '-' + value.slice(6);
-//   // }
+  // if (value.length >= 3 && value.charAt(3) !== '-') {
+  //   value = value.slice(0, 3) + '-' + value.slice(3);
+  // }
+  // if (value.length >= 6 && value.charAt(6) !== '-') {
+  //   value = value.slice(0, 6) + '-' + value.slice(6);
+  // }
   
-//   value = value.slice(0, 11);
-//   e.target.value = value;
-// });
+  //value = value.slice(0, 11);
+  e.target.value = value;
+});
 
 function showDownloadMessage() {
   const toastContainer = document.getElementById('toast-container');
