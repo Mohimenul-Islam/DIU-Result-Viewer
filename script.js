@@ -123,10 +123,11 @@ function displayResult(data) {
           </div>
           
           <!-- Download Button -->
+          <div id="toast-container" class="fixed top-4 right-4 z-50"></div>
           <div class="text-center">
               <button 
                   id="download-btn"
-                  onclick="downloadPDF()"
+                  onclick="showDownloadMessage()"
                   class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
               >
                   <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,21 +146,50 @@ function displayResult(data) {
 document.getElementById('studentId').addEventListener('input', function(e) {
   let value = e.target.value.replace(/[^0-9-]/g, '');
   
-  if (value.length >= 3 && value.charAt(3) !== '-') {
-    value = value.slice(0, 3) + '-' + value.slice(3);
-  }
-  if (value.length >= 6 && value.charAt(6) !== '-') {
-    value = value.slice(0, 6) + '-' + value.slice(6);
-  }
+  // if (value.length >= 3 && value.charAt(3) !== '-') {
+  //   value = value.slice(0, 3) + '-' + value.slice(3);
+  // }
+  // if (value.length >= 6 && value.charAt(6) !== '-') {
+  //   value = value.slice(0, 6) + '-' + value.slice(6);
+  // }
   
   value = value.slice(0, 11);
   e.target.value = value;
 });
 
-function downloadPDF() {
-  alert("Currently unavailable");
+function showDownloadMessage() {
+  const toastContainer = document.getElementById('toast-container');
+  
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = 'transform transition-all duration-300 ease-out scale-95 opacity-0';
+  toast.innerHTML = `
+    <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-4 mb-4 flex items-center space-x-3">
+      <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="text-gray-700">PDF Download is currently unavailable</p>
+    </div>
+  `;
+  
+  // Add toast to container
+  toastContainer.appendChild(toast);
+  
+  // Trigger animation
+  setTimeout(() => {
+    toast.classList.remove('scale-95', 'opacity-0');
+    toast.classList.add('scale-100', 'opacity-100');
+  }, 10);
+  
+  // Remove toast after 3 seconds
+  setTimeout(() => {
+    toast.classList.remove('scale-100', 'opacity-100');
+    toast.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => {
+      toastContainer.removeChild(toast);
+    }, 300);
+  }, 3000);
 }
-
 function ensureContactSection() {
   const contactSection = document.getElementById('contact');
   if (!contactSection) {
