@@ -1,24 +1,40 @@
+async function validateStudentId(studentId) {
+  if (!studentId) {
+    throw new Error('Please enter your Student ID');
+  }
+
+  const studentIdRegex = /^\d{3}-\d{2}-\d{4}$/;
+  if (!studentIdRegex.test(studentId)) {
+    throw new Error('Invalid Student ID format. Please use format: XXX-XX-XXXX (e.g., 221-15-5725)');
+  }
+
+  return true;
+}
+
 async function fetchResult() {
   const studentId = document.getElementById('studentId').value;
   const semesterId = document.getElementById('semesterId').value;
   const resultContainer = document.getElementById('result');
 
-  // Display a loading state for the result
-  resultContainer.innerHTML = `
+  try {
+    // Validate student ID before proceeding
+    await validateStudentId(studentId);
+
+    // Display loading state
+    resultContainer.innerHTML = `
       <div class="card text-center">
           <div class="animate-pulse">
               <div class="text-gray-600">Fetching result...</div>
           </div>
       </div>`;
 
-  try {
     // Fetch the result data from the API
     const response = await fetch(
       `/.netlify/functions/fetch-result?semesterId=${semesterId}&studentId=${studentId}`
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch result: ${response.status}`);
+      throw new Error(`No result found for ID: ${studentId}`);
     }
 
     const data = await response.json();
@@ -30,12 +46,17 @@ async function fetchResult() {
                 <svg class="w-12 h-12 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
-                <p class="text-lg font-semibold">Error: ${error.message}</p>
+                <p class="text-lg font-semibold">${error.message}</p>
+                ${error.message.includes('format') ? `
+                <div class="mt-4 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+                    <p>Example of correct format:</p>
+                    <code class="font-mono bg-gray-100 px-2 py-1 rounded">221-15-5725</code>
+                </div>
+                ` : ''}
             </div>
         </div>`;
   }
 
-  // Ensure the contact section is rendered
   ensureContactSection();
 }
 
@@ -61,7 +82,7 @@ function displayResult(data) {
   const cgpa = results[0].cgpa || "N/A";
 
   let resultHtml = `
-      <div class="card">
+      <div id="result-content" class="card">
           <div class="text-center mb-8">
               <h2 class="text-2xl font-bold text-gray-800 mb-2">${studentName}</h2>
               <p class="text-gray-600">${departmentName}</p>
@@ -100,12 +121,72 @@ function displayResult(data) {
                   </tbody>
               </table>
           </div>
+          
+          <!-- Download Button -->
+          <div class="text-center">
+              <button 
+                  id="download-btn"
+                  onclick="downloadPDF()"
+                  class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download Result as PDF
+              </button>
+          </div>
       </div>`;
 
   resultContainer.innerHTML = resultHtml;
-
-  // Ensure the contact section is rendered
   ensureContactSection();
+}
+
+// Add input formatting helper
+document.getElementById('studentId').addEventListener('input', function(e) {
+  let value = e.target.value.replace(/[^0-9-]/g, '');
+  
+  if (value.length >= 3 && value.charAt(3) !== '-') {
+    value = value.slice(0, 3) + '-' + value.slice(3);
+  }
+  if (value.length >= 6 && value.charAt(6) !== '-') {
+    value = value.slice(0, 6) + '-' + value.slice(6);
+  }
+  
+  value = value.slice(0, 11);
+  e.target.value = value;
+});
+
+function downloadPDF() {
+  const resultElement = document.getElementById('result-content');
+  
+  const opt = {
+    margin: 1,
+    filename: 'academic-result.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+
+  const downloadBtn = document.getElementById('download-btn');
+  const originalContent = downloadBtn.innerHTML;
+  downloadBtn.innerHTML = `
+    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    Generating PDF...`;
+  downloadBtn.disabled = true;
+
+  html2pdf().set(opt).from(resultElement).save()
+    .then(() => {
+      downloadBtn.innerHTML = originalContent;
+      downloadBtn.disabled = false;
+    })
+    .catch(error => {
+      console.error('PDF generation failed:', error);
+      downloadBtn.innerHTML = originalContent;
+      downloadBtn.disabled = false;
+    });
 }
 
 function ensureContactSection() {
