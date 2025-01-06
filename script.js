@@ -2,7 +2,6 @@ async function fetchResult() {
   const studentId = document.getElementById('studentId').value;
   const semesterId = document.getElementById('semesterId').value;
   const resultContainer = document.getElementById('result');
-  const contactSection = document.getElementById('contact');
 
   // Display a loading state for the result
   resultContainer.innerHTML = `
@@ -36,8 +35,8 @@ async function fetchResult() {
         </div>`;
   }
 
-  // Render the contact section regardless of the result
-  displayContactSection(contactSection);
+  // Ensure the contact section is rendered
+  ensureContactSection();
 }
 
 function displayResult(data) {
@@ -104,6 +103,19 @@ function displayResult(data) {
       </div>`;
 
   resultContainer.innerHTML = resultHtml;
+
+  // Ensure the contact section is rendered
+  ensureContactSection();
+}
+
+function ensureContactSection() {
+  const contactSection = document.getElementById('contact');
+  if (!contactSection) {
+    const container = document.createElement('div');
+    container.id = 'contact';
+    document.body.appendChild(container);
+  }
+  displayContactSection(document.getElementById('contact'));
 }
 
 function displayContactSection(contactSection) {
