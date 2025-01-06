@@ -2,8 +2,8 @@ async function validateStudentId(studentId) {
   if (!studentId) {
     throw new Error('Please enter your Student ID');
   }
-
-  const studentIdRegex = /^\d{3}-\d{2}-\d{1, 2, 3, 4}$/;
+  //const studentIdRegex = /^\d{3}-\d{2}-\d{3,4}$/;
+  const studentIdRegex = /^\d{3}-\d{2}-\d{1,4}$/;
   if (!studentIdRegex.test(studentId)) {
     throw new Error('Invalid Student ID format. Please use format: XXX-XX-XXXX (e.g., 221-15-5725)');
   }
