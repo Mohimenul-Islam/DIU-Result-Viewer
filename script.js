@@ -157,16 +157,64 @@ document.getElementById('studentId').addEventListener('input', function(e) {
 });
 
 function downloadPDF() {
-  const resultElement = document.getElementById('result-content');
+  // Get the result data
+  const studentName = document.querySelector('#result h2').textContent;
+  const departmentName = document.querySelector('#result p:nth-of-type(1)').textContent;
+  const studentId = document.querySelector('#result p:nth-of-type(2)').textContent.split(': ')[1];
+  const semester = document.querySelector('#result p:nth-of-type(3)').textContent.split(': ')[1];
+  const cgpa = document.querySelector('#result .text-4xl').textContent;
   
-  const opt = {
-    margin: 1,
-    filename: 'academic-result.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-  };
+  // Create a temporary container for PDF content
+  const pdfContainer = document.createElement('div');
+  pdfContainer.style.padding = '20px';
+  pdfContainer.style.maxWidth = '800px';
+  pdfContainer.style.margin = '0 auto';
+  pdfContainer.style.fontFamily = 'Arial, sans-serif';
+  
+  // Create the PDF content with inline styles
+  pdfContainer.innerHTML = `
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h1 style="font-size: 24px; color: #1a202c; margin: 0 0 8px 0;">${studentName}</h1>
+      <p style="margin: 4px 0; color: #4a5568; font-size: 14px;">${departmentName}</p>
+      <p style="margin: 4px 0; color: #4a5568; font-size: 14px;">ID: ${studentId}</p>
+      <p style="margin: 4px 0; color: #4a5568; font-size: 14px;">${semester}</p>
+    </div>
 
+    <div style="background: linear-gradient(90deg, #3b82f6, #8b5cf6); 
+                color: white; 
+                padding: 15px; 
+                border-radius: 8px; 
+                text-align: center;
+                margin: 20px 0;">
+      <p style="margin: 0; font-size: 14px; text-transform: uppercase;">CGPA</p>
+      <p style="margin: 5px 0 0 0; font-size: 28px; font-weight: bold;">${cgpa}</p>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px;">
+      <thead>
+        <tr style="background-color: #f1f5f9;">
+          <th style="padding: 8px; text-align: left; border: 1px solid #e2e8f0;">Course Code</th>
+          <th style="padding: 8px; text-align: left; border: 1px solid #e2e8f0;">Course Title</th>
+          <th style="padding: 8px; text-align: center; border: 1px solid #e2e8f0;">Credit</th>
+          <th style="padding: 8px; text-align: center; border: 1px solid #e2e8f0;">Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Array.from(document.querySelectorAll('#result tbody tr')).map(row => `
+          <tr>
+            <td style="padding: 8px; border: 1px solid #e2e8f0;">${row.cells[0].textContent}</td>
+            <td style="padding: 8px; border: 1px solid #e2e8f0;">${row.cells[1].textContent}</td>
+            <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center;">${row.cells[2].textContent}</td>
+            <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; color: ${getPDFGradeColor(row.cells[3].textContent)}">
+              ${row.cells[3].textContent}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+
+  // Handle button state
   const downloadBtn = document.getElementById('download-btn');
   const originalContent = downloadBtn.innerHTML;
   downloadBtn.innerHTML = `
@@ -177,61 +225,55 @@ function downloadPDF() {
     Generating PDF...`;
   downloadBtn.disabled = true;
 
-  html2pdf().set(opt).from(resultElement).save()
+  // Add container to document temporarily
+  document.body.appendChild(pdfContainer);
+
+  // Configure PDF options
+  const opt = {
+    margin: [0.3, 0.3],
+    filename: `${studentId}-result.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 2,
+      useCORS: true,
+      letterRendering: true
+    },
+    jsPDF: { 
+      unit: 'in', 
+      format: 'a4', 
+      orientation: 'portrait'
+    }
+  };
+
+  // Generate PDF
+  html2pdf().set(opt).from(pdfContainer).save()
     .then(() => {
+      document.body.removeChild(pdfContainer);
       downloadBtn.innerHTML = originalContent;
       downloadBtn.disabled = false;
     })
     .catch(error => {
       console.error('PDF generation failed:', error);
+      document.body.removeChild(pdfContainer);
       downloadBtn.innerHTML = originalContent;
       downloadBtn.disabled = false;
     });
 }
 
-function ensureContactSection() {
-  const contactSection = document.getElementById('contact');
-  if (!contactSection) {
-    const container = document.createElement('div');
-    container.id = 'contact';
-    document.body.appendChild(container);
-  }
-  displayContactSection(document.getElementById('contact'));
-}
-
-function displayContactSection(contactSection) {
-  const contactHtml = `
-      <div class="card text-center mt-6">
-          <p class="text-gray-600 mb-6 font-medium">Contact me if you have any queries!</p>
-          <div class="flex justify-center space-x-8">
-              <a href="https://www.facebook.com/mohimenul.islam.927" target="_blank" class="group relative">
-                  <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-75 group-hover:opacity-100 blur transition duration-200"></div>
-                  <div class="relative bg-white rounded-lg p-4 flex items-center space-x-3 transition duration-200 transform group-hover:scale-105">
-                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                      </svg>
-                      <span class="text-gray-700 font-medium">Facebook</span>
-                  </div>
-              </a>
-              <a href="https://www.linkedin.com/in/mohimenul-islam0" target="_blank" class="group relative">
-                  <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg opacity-75 group-hover:opacity-100 blur transition duration-200"></div>
-                  <div class="relative bg-white rounded-lg p-4 flex items-center space-x-3 transition duration-200 transform group-hover:scale-105">
-                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                          <rect x="2" y="9" width="4" height="12"></rect>
-                          <circle cx="4" cy="4" r="2"></circle>
-                      </svg>
-                      <span class="text-gray-700 font-medium">LinkedIn</span>
-                  </div>
-              </a>
-          </div>
-          <p class="mt-8 text-gray-500 italic">
-              <span class="inline-block transform hover:scale-110 transition-transform duration-200">
-                  Arigato gozaimasu for visiting!
-              </span>
-          </p>
-      </div>`;
-  contactSection.innerHTML = contactHtml;
+function getPDFGradeColor(grade) {
+  const colors = {
+    'A+': '#059669',
+    'A': '#059669',
+    'A-': '#10B981',
+    'B+': '#2563EB',
+    'B': '#3B82F6',
+    'B-': '#60A5FA',
+    'C+': '#D97706',
+    'C': '#F59E0B',
+    'D': '#DC2626',
+    'F': '#DC2626'
+  };
+  return colors[grade] || '#111827';
 }
 
 function getGradeColor(grade) {
