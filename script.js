@@ -142,20 +142,20 @@ function displayResult(data) {
   ensureContactSection();
 }
 
-// Add input formatting helper
-document.getElementById('studentId').addEventListener('input', function(e) {
-  let value = e.target.value.replace(/[^0-9-]/g, '');
+// // Add input formatting helper
+// document.getElementById('studentId').addEventListener('input', function(e) {
+//   let value = e.target.value.replace(/[^0-9-]/g, '');
   
-  // if (value.length >= 3 && value.charAt(3) !== '-') {
-  //   value = value.slice(0, 3) + '-' + value.slice(3);
-  // }
-  // if (value.length >= 6 && value.charAt(6) !== '-') {
-  //   value = value.slice(0, 6) + '-' + value.slice(6);
-  // }
+//   // if (value.length >= 3 && value.charAt(3) !== '-') {
+//   //   value = value.slice(0, 3) + '-' + value.slice(3);
+//   // }
+//   // if (value.length >= 6 && value.charAt(6) !== '-') {
+//   //   value = value.slice(0, 6) + '-' + value.slice(6);
+//   // }
   
-  value = value.slice(0, 11);
-  e.target.value = value;
-});
+//   value = value.slice(0, 11);
+//   e.target.value = value;
+// });
 
 function showDownloadMessage() {
   const toastContainer = document.getElementById('toast-container');
