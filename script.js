@@ -113,7 +113,7 @@ function displayResult(data) {
             <td class="px-6 py-4 text-sm text-gray-900">${course.customCourseId}</td>
             <td class="px-6 py-4 text-sm text-gray-900">${course.courseTitle}</td>
             <td class="px-6 py-4 text-sm text-gray-900">${course.totalCredit}</td>
-            <td class="px-6 py-4 text-sm font-medium ${getGradeColor(course.gradeLetter)}">${course.gradeLetter}</td>
+            <td class="px-6 py-4 text-sm font-medium ${getGradeColor(course.pointEquivalent)}">${course.pointEquivalent}</td>
         </tr>`;
   });
 
