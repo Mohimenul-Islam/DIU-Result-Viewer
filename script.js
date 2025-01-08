@@ -237,16 +237,16 @@ function displayContactSection(contactSection) {
 
 function getGradeColor(grade) {
   const colors = {
-    'A+': 'text-green-600',
-    'A': 'text-green-600',
-    'A-': 'text-green-500',
-    'B+': 'text-blue-600',
-    'B': 'text-blue-500',
-    'B-': 'text-blue-400',
-    'C+': 'text-yellow-600',
-    'C': 'text-yellow-500',
-    'D': 'text-orange-500',
-    'F': 'text-red-600',
+    '4': 'text-green-600',
+    '3.75': 'text-green-600',
+    '3.5': 'text-green-500',
+    '3.25': 'text-blue-600',
+    '3': 'text-blue-500',
+    '2.75': 'text-blue-400',
+    '2.5': 'text-yellow-600',
+    '2.25': 'text-yellow-500',
+    '2': 'text-orange-500',
+    '0': 'text-red-600',
   };
   return colors[grade] || 'text-gray-900';
 }
